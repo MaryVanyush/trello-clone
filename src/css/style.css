@@ -1,0 +1,249 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+    box-sizing: border-box;
+}
+
+input {
+    outline: none;
+}
+
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+body{
+    background-color: rgb(103, 170, 247);
+    background-image: url('../images/core-background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.board{
+    color:#1f3966;
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.board-content {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    margin-top: 12px;
+}
+
+.list-wrapper {
+    padding: 7px;
+    margin: 0 6px;
+    margin-left: 12px;
+    box-sizing: border-box;
+    background-color: #dce8e9;
+    height: 100%;
+    min-width: 30%;
+    border-radius: 5px;
+}
+
+.list{
+    display: flex;
+    flex-direction: column;
+}
+
+.list-header{
+    width: 100%;
+    height: 40px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.list-header-name{
+    pointer-events: none;
+    position: absolute;
+    width: 100%;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 14px 8px;
+}
+
+.overlapped {
+    cursor: pointer;
+    opacity: 0;
+    width: 85%;
+    height: 100%;
+    padding: 0 8px;
+    position: absolute;
+    border: none;
+    border-radius: 5px;
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;
+    color:#1f3966;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.list-header-extras{
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 90%;
+    width: 25px;
+    height: 30px;
+    background-image: url(../images/free-icon-dots-3426508.png);
+    background-repeat: no-repeat;
+    opacity: 0.5;
+}
+
+.card {
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    position: relative;
+}
+
+.card.dragged {
+    position: absolute;
+    z-index: 99;
+    pointer-events: none;
+}
+
+.card-text {
+    color:#1f3966;
+    margin: 7px 0px;
+    width: 100%;
+    word-wrap: break-word;  
+    min-height: 40px;
+    padding: 14px 8px;
+    border-bottom: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.active_card-close-button {
+    position: absolute;
+    margin-top: -43px;
+    margin-left: 90%;
+    width: 25px;
+    height: 30px;
+    background-image: url(../images/free-icon-crossed-4219073.png);
+    background-repeat: no-repeat;
+    opacity: 0.5;
+}
+
+
+.add-card-button{
+    min-height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    padding-left: 7px;
+    text-decoration: none;
+    color: #687b9b;
+}
+
+.add-card-button-image {
+    font-size: 25px;
+    margin-right: 5px;
+    color: #687b9b;
+    padding-bottom: 5px;
+}
+
+.add-card-button-text{
+    margin-left: 7px;
+    color: #687b9b;
+}
+
+.form{
+    display: none;
+}
+
+.active-form{
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+}
+
+.form-textarea{
+    resize: none;
+    height: 60px;
+    border-radius: 5px;
+    border: none;
+    background-color: #fff;
+    color:#1f3966;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.form-textarea::placeholder{
+    color:#6a7e9c;
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif;
+    font-size: 14px;
+}
+
+.form-textarea:focus{
+    outline: none;
+}
+
+.buttons-form{
+    margin-top: 7px;
+    display: flex;
+}
+
+.btn-form-add{
+    background-color: rgb(65, 199, 39);
+    border: none;
+    color: #fff;
+    height: 35px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.btn-form-add:hover{
+    background-color: rgb(96, 170, 81);
+}
+
+.btn-form-cancel{
+    border: none;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #ffffff00;
+    opacity: 0.7;
+}
+
+.btn-form-cancel:hover{
+    opacity: 0.9;
+}
