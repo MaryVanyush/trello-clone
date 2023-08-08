@@ -46,27 +46,47 @@ addCardBtn.forEach((el) =>
   }),
 );
 
-// переименовывание
-
+//_________________renameTitle
 inputHeader.forEach((el) => {
   el.addEventListener("click", card.renameTitle);
 });
 
-//  d&d
-
+//_________________d&d
 dragAndDrop();
+//
+//
+//
+//_________________lokalstorage
+window.addEventListener("beforeunload", () => {
+  const data = { listLeft: [], listCenter: [], listRight: [] };
+  const cards = document.querySelectorAll(".card");
+  cards.forEach((el) => {
+    if (el.parentElement.parentElement.classList.contains("list-left")) {
+      data.listLeft.push(el.firstChild.textContent);
+    } else if (
+      el.parentElement.parentElement.classList.contains("list-center")
+    ) {
+      data.listCenter.push(el.firstChild.textContent);
+    } else if (
+      el.parentElement.parentElement.classList.contains("list-right")
+    ) {
+      data.listRight.push(el.firstChild.textContent);
+    }
+  });
+  localStorage.setItem("data", JSON.stringify(data));
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const json = localStorage.getItem("data");
+  const data = JSON.parse(json);
+  const leftContainer = document.querySelector(".list-left");
+  const centerContainer = document.querySelector(".list-center");
+  const rightContainer = document.querySelector(".list-right");
+  data.listLeft.forEach((el) => card.crateCard(leftContainer, el));
+  data.listCenter.forEach((el) => card.crateCard(centerContainer, el));
+  data.listRight.forEach((el) => card.crateCard(rightContainer, el));
+});
 
 // почему не устанавливается курсор grabbing
-// Перемещение между колонками: если попаст на карту, а не на контейнер, то улетает обратно в предыдущую колонку
-
-// при перемещении между колонками они меняют размер при больших карточках
-// не встает карточка на самую первую позицию
 
 // при двойном щелчке по инпуту стирается имя - в blurForm
-
-// при потере фокуса текстэрии скрывать форму
-// вывести крестик в верхний край поля карты
-
-// создать хранение в lokalstorage
-// если добавили карту или удалили или переименовали - обновлять lokalstorage
-// Перемещать карточки как внутри колонки, так и между колонками

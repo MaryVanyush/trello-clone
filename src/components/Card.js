@@ -60,7 +60,8 @@ export default class Card {
   }
 
   crateCard(parentElement, text) {
-    const cardsContainer = parentElement.querySelectorAll(".list-cards")[0];
+    if (!parentElement) return;
+    const cardsContainer = parentElement.querySelector(".list-cards");
     const card = document.createElement("div");
     card.classList = "card";
     const cardText = document.createElement("div");
@@ -102,7 +103,7 @@ export default class Card {
       const curentBtnForm = event.target;
       if (curentBtnForm.classList.contains("btn-form-add")) {
         if (!textarea.value) return;
-        this.addForm(formElement, parentElement, addCardElement);
+        this.addForm(formElement, parentElement);
         addCardElement.style.display = "";
         btnForm.forEach((el) =>
           el.removeEventListener("click", onClickBtnForm),

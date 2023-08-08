@@ -58,7 +58,8 @@ class Card {
     });
   }
   crateCard(parentElement, text) {
-    const cardsContainer = parentElement.querySelectorAll(".list-cards")[0];
+    if (!parentElement) return;
+    const cardsContainer = parentElement.querySelector(".list-cards");
     const card = document.createElement("div");
     card.classList = "card";
     const cardText = document.createElement("div");
@@ -94,7 +95,7 @@ class Card {
       const curentBtnForm = event.target;
       if (curentBtnForm.classList.contains("btn-form-add")) {
         if (!textarea.value) return;
-        this.addForm(formElement, parentElement, addCardElement);
+        this.addForm(formElement, parentElement);
         addCardElement.style.display = "";
         btnForm.forEach(el => el.removeEventListener("click", onClickBtnForm));
       } else {
@@ -122,38 +123,60 @@ class Card {
 function dragAndDrop() {
   const listCards = document.querySelectorAll(".list-cards");
   let dragAndDropElement = undefined;
-  let eventListCards = undefined;
+  let appendPosition = undefined;
+  let elTarget = undefined;
   const createPlaceholder = () => {
     const placeholder = document.createElement("div");
     placeholder.style.backgroundColor = "rgba(0,0,0,0)";
+    placeholder.style.pointerEvents = "none";
     return placeholder;
   };
   let placeholder = createPlaceholder();
   const onMouseOverDAndDElement = e => {
-    let eventElementContainer = e.target.querySelector(".list-cards");
+    let parent = e.target.closest(".list");
+    if (!parent) return;
+    const {
+      y,
+      height
+    } = e.target.getBoundingClientRect();
+    appendPosition = y + height / 2 > e.clientY ? "beforebegin" : "afterend";
+    let eventElementContainer = parent.querySelector(".list-cards");
     dragAndDropElement.style.top = e.clientY + "px";
     dragAndDropElement.style.left = e.clientX + "px";
-    dragAndDropElement.style.cursor = "grabbing";
-    if (eventElementContainer) {
-      placeholder.style.width = dragAndDropElement.style.width;
-      placeholder.style.height = dragAndDropElement.style.height;
+    placeholder.style.width = dragAndDropElement.style.width;
+    placeholder.style.height = dragAndDropElement.style.height;
+    if (e.target.closest(".card")) {
+      elTarget = e.target.closest(".card");
+      elTarget.insertAdjacentElement(appendPosition, placeholder);
+    } else {
       eventElementContainer.append(placeholder);
     }
   };
   const onMouseUp = e => {
-    let eventElementCard = e.target.closest(".card");
-    let eventElementContainer = e.target.parentElement.querySelector(".list-cards");
-    if (!eventElementContainer) {
-      eventElementContainer = e.target.closest(".list-cards");
+    if (!e.target.parentElement || !e.target.closest(".list")) {
+      dragAndDropElement.classList.remove("dragged");
+      dragAndDropElement.style = "";
+      dragAndDropElement = undefined;
+      placeholder.remove();
+      document.documentElement.removeEventListener("mouseup", onMouseUp);
+      document.documentElement.removeEventListener("mouseover", onMouseOverDAndDElement);
+      return;
+    }
+    let eventElementContainer = e.target.closest(".list-cards") ? e.target.closest(".list-cards") : e.target.querySelector(".list-cards");
+    let parentElTarget;
+    if (elTarget) {
+      parentElTarget = elTarget.closest(".list-cards");
     }
     if (!eventElementContainer) {
-      eventElementContainer = eventListCards;
+      eventElementContainer = e.target.closest(".list").querySelector(".list-cards");
     }
-    if (eventElementCard) {
-      dragAndDropElement.parentElement.insertBefore(eventElementCard, dragAndDropElement);
+    if (parentElTarget === eventElementContainer) {
+      elTarget.insertAdjacentElement(appendPosition, dragAndDropElement);
     } else {
       eventElementContainer.append(dragAndDropElement);
     }
+    appendPosition = undefined;
+    elTarget = undefined;
     dragAndDropElement.classList.remove("dragged");
     dragAndDropElement.style = "";
     dragAndDropElement = undefined;
@@ -163,16 +186,14 @@ function dragAndDrop() {
   };
   listCards.forEach(el => el.addEventListener("mousedown", e => {
     e.preventDefault();
-    const cardCloseBtn = el.querySelector(".card-close-button");
-    if (e.target === cardCloseBtn) {
+    if (e.target.closest(".card-close-button")) {
       return;
     }
-    eventListCards = el;
     dragAndDropElement = e.target.closest(".card");
     dragAndDropElement.style.height = e.target.clientHeight + "px";
     dragAndDropElement.style.width = e.target.clientWidth + "px";
     dragAndDropElement.classList.add("dragged");
-    dragAndDropElement.style.cursor = "grabbing";
+    dragAndDropElement.style.pointerEvents = "none";
     document.documentElement.addEventListener("mouseup", onMouseUp);
     document.documentElement.addEventListener("mouseover", onMouseOverDAndDElement);
   }));
@@ -219,30 +240,49 @@ addCardBtn.forEach(el => el.addEventListener("click", e => {
   el.style.display = "none";
 }));
 
-// переименовывание
-
+//_________________renameTitle
 inputHeader.forEach(el => {
   el.addEventListener("click", card.renameTitle);
 });
 
-//  d&d
-
+//_________________d&d
 dragAndDrop();
+//
+//
+//
+//_________________lokalstorage
+window.addEventListener("beforeunload", () => {
+  const data = {
+    listLeft: [],
+    listCenter: [],
+    listRight: []
+  };
+  const cards = document.querySelectorAll(".card");
+  cards.forEach(el => {
+    if (el.parentElement.parentElement.classList.contains("list-left")) {
+      data.listLeft.push(el.firstChild.textContent);
+    } else if (el.parentElement.parentElement.classList.contains("list-center")) {
+      data.listCenter.push(el.firstChild.textContent);
+    } else if (el.parentElement.parentElement.classList.contains("list-right")) {
+      data.listRight.push(el.firstChild.textContent);
+    }
+  });
+  localStorage.setItem("data", JSON.stringify(data));
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const json = localStorage.getItem("data");
+  const data = JSON.parse(json);
+  const leftContainer = document.querySelector(".list-left");
+  const centerContainer = document.querySelector(".list-center");
+  const rightContainer = document.querySelector(".list-right");
+  data.listLeft.forEach(el => card.crateCard(leftContainer, el));
+  data.listCenter.forEach(el => card.crateCard(centerContainer, el));
+  data.listRight.forEach(el => card.crateCard(rightContainer, el));
+});
 
 // почему не устанавливается курсор grabbing
-// Перемещение между колонками: если попаст на карту, а не на контейнер, то улетает обратно в предыдущую колонку
-
-// при перемещении между колонками они меняют размер при больших карточках
-// не встает карточка на самую первую позицию
 
 // при двойном щелчке по инпуту стирается имя - в blurForm
-
-// при потере фокуса текстэрии скрывать форму
-// вывести крестик в верхний край поля карты
-
-// создать хранение в lokalstorage
-// если добавили карту или удалили или переименовали - обновлять lokalstorage
-// Перемещать карточки как внутри колонки, так и между колонками
 ;// CONCATENATED MODULE: ./src/index.js
 
 
